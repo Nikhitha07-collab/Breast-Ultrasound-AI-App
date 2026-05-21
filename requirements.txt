@@ -1,8 +1,7 @@
 streamlit
-tensorflow
+tensorflow-cpu
 opencv-python-headless
 numpy
-matplotlib
 pillow
-scikit-learn
 pydicom
+scikit-learn
