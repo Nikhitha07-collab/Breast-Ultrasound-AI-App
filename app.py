@@ -10,8 +10,8 @@ st.write("Testing TensorFlow model loading...")
 
 @st.cache_resource
 def load_models():
-    seg_model = load_model("unet_breast_tumor_model.h5", compile=False)
-    cls_model = load_model("breast_ultrasound_classifier.h5", compile=False)
+    seg_model = load_model("unet_breast_tumor_model.keras", compile=False)
+    cls_model = load_model("breast_ultrasound_classifier.keras", compile=False)
     return seg_model, cls_model
 
 
