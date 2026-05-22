@@ -7,22 +7,19 @@ st.title("Breast Ultrasound AI Diagnostic Support")
 
 st.write("Testing TensorFlow model loading...")
 
+
 @st.cache_resource
 def load_models():
-
- seg_model = load_model("unet_breast_tumor_model.h5", compile=False)
-cls_model = load_model("breast_ultrasound_classifier.h5", compile=False)
-
+    seg_model = load_model("unet_breast_tumor_model.h5", compile=False)
+    cls_model = load_model("breast_ultrasound_classifier.h5", compile=False)
     return seg_model, cls_model
 
-try:
 
+try:
     seg_model, cls_model = load_models()
 
     st.success("TensorFlow models loaded successfully!")
 
 except Exception as error:
-
     st.error("Model loading failed.")
-
     st.write(error)
