@@ -83,9 +83,14 @@ def read_image(uploaded_file):
     if uploaded_file.name.lower().endswith(".dcm"):
         dicom = pydicom.dcmread(uploaded_file)
         image = dicom.pixel_array.astype(np.float32)
+
         image = image - image.min()
-        image = image / image.max()
+
+        if image.max() > 0:
+            image = image / image.max()
+
         image = (image * 255).astype(np.uint8)
+
     else:
         image = Image.open(uploaded_file).convert("L")
         image = np.array(image)
@@ -107,7 +112,10 @@ if uploaded_file is not None:
     raw_mask = seg_model.predict(model_input)[0, :, :, 0]
     mask = (raw_mask > 0.2).astype(np.uint8)
 
-    labels_count, labels, stats, _ = cv2.connectedComponentsWithStats(mask, connectivity=8)
+    labels_count, labels, stats, _ = cv2.connectedComponentsWithStats(
+        mask,
+        connectivity=8
+    )
 
     clean_mask = np.zeros_like(mask)
 
@@ -121,9 +129,16 @@ if uploaded_file is not None:
     predicted_class = class_names[class_id]
     confidence = class_scores[class_id]
 
-    boxed_image = cv2.cvtColor((image_small * 255).astype(np.uint8), cv2.COLOR_GRAY2BGR)
+    boxed_image = cv2.cvtColor(
+        (image_small * 255).astype(np.uint8),
+        cv2.COLOR_GRAY2BGR
+    )
 
-    contours, _ = cv2.findContours(clean_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours, _ = cv2.findContours(
+        clean_mask,
+        cv2.RETR_EXTERNAL,
+        cv2.CHAIN_APPROX_SIMPLE
+    )
 
     lesion_location = "No clear lesion detected."
 
@@ -131,20 +146,40 @@ if uploaded_file is not None:
         contour = max(contours, key=cv2.contourArea)
         x, y, w, h = cv2.boundingRect(contour)
 
-        cv2.rectangle(boxed_image, (x, y), (x + w, y + h), (0, 0, 255), 2)
+        cv2.rectangle(
+            boxed_image,
+            (x, y),
+            (x + w, y + h),
+            (0, 0, 255),
+            2
+        )
 
-        lesion_location = f"Lesion boxed at x={x}, y={y}, width={w}, height={h}."
+        lesion_location = (
+            f"Lesion boxed at x={x}, y={y}, width={w}, height={h}."
+        )
 
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        st.image(image_small, caption="Uploaded Ultrasound Image", use_container_width=True)
+        st.image(
+            image_small,
+            caption="Uploaded Ultrasound Image",
+            use_column_width=True
+        )
 
     with col2:
-        st.image(clean_mask * 255, caption="Predicted Lesion Mask", use_container_width=True)
+        st.image(
+            clean_mask * 255,
+            caption="Predicted Lesion Mask",
+            use_column_width=True
+        )
 
     with col3:
-        st.image(cv2.cvtColor(boxed_image, cv2.COLOR_BGR2RGB), caption="Boxed Lesion", use_container_width=True)
+        st.image(
+            cv2.cvtColor(boxed_image, cv2.COLOR_BGR2RGB),
+            caption="Boxed Lesion",
+            use_column_width=True
+        )
 
     lesion_pixels = np.sum(clean_mask)
     total_pixels = clean_mask.shape[0] * clean_mask.shape[1]
