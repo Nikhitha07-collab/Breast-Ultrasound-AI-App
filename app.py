@@ -1,5 +1,5 @@
 import streamlit as st
-from tensorflow.keras.models import load_model
+from keras.models import load_model
 
 st.set_page_config(page_title="Breast Ultrasound AI", layout="wide")
 
