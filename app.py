@@ -4,8 +4,14 @@ import cv2
 from PIL import Image, UnidentifiedImageError
 import pydicom
 from pydicom.errors import InvalidDicomError
-from pydicom.pixels import apply_modality_lut, apply_voi_lut
-from tensorflow.keras import layers, models
+
+try:
+    from pydicom.pixels import apply_modality_lut, apply_voi_lut
+except (ImportError, ModuleNotFoundError):
+    from pydicom.pixel_data_handlers.util import (
+        apply_modality_lut,
+        apply_voi_lut,
+    )from tensorflow.keras import layers, models
 
 
 # ============================================================
