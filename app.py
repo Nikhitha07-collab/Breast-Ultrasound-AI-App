@@ -1,37 +1,43 @@
-import streamlit as st
-import numpy as np
+import io
+import os
+import tempfile
+
+import io
+import os
+import tempfile
 import cv2
+
+import io
+import os
+import tempfile
+import cv2
+
+import numpy as np
+import streamlit as st
+import tensorflow as tf
+
 from PIL import Image, UnidentifiedImageError
+from tensorflow.keras import layers, models
+
 import pydicom
 from pydicom.errors import InvalidDicomError
 
+
+# ============================================================
+# PYDICOM COMPATIBILITY
+# Supports both older and newer pydicom versions
+# ============================================================
+
 try:
+    # pydicom 3.x
     from pydicom.pixels import apply_modality_lut, apply_voi_lut
+
 except (ImportError, ModuleNotFoundError):
+    # pydicom 2.x
     from pydicom.pixel_data_handlers.util import (
         apply_modality_lut,
         apply_voi_lut,
-    )from tensorflow.keras import layers, models
-
-
-# ============================================================
-# PAGE CONFIGURATION
-# ============================================================
-
-st.set_page_config(
-    page_title="Medical Imaging Viewer with Ultrasound AI",
-    page_icon="🩺",
-    layout="wide"
-)
-
-st.title("Medical Imaging Viewer with Ultrasound AI")
-
-st.write(
-    "Upload a PNG, JPG, JPEG, or DICOM image. "
-    "Ultrasound images can be analyzed using the AI pipeline. "
-    "CT and MRI images are displayed in viewer mode."
-)
-
+    )
 
 # ============================================================
 # U-NET SEGMENTATION MODEL
