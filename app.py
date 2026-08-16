@@ -1,15 +1,6 @@
 import io
 import os
 import tempfile
-
-import io
-import os
-import tempfile
-import cv2
-
-import io
-import os
-import tempfile
 import cv2
 
 import numpy as np
@@ -25,6 +16,7 @@ from pydicom.errors import InvalidDicomError
 
 # ============================================================
 # PYDICOM COMPATIBILITY
+
 # Supports both older and newer pydicom versions
 # ============================================================
 
@@ -848,11 +840,11 @@ def calculate_lesion_coverage(
 with st.sidebar:
 
     st.header(
-        "Medical Image Upload"
+        "Breast Ultrasound Upload"
     )
 
     uploaded_file = st.file_uploader(
-        "Choose image",
+        "Choose a breast ultrasound image",
         type=[
             "png",
             "jpg",
@@ -868,7 +860,7 @@ with st.sidebar:
     )
 
     st.write(
-        "DICOM (.dcm)"
+        "Ultrasound DICOM (.dcm)"
     )
 
     st.write(
@@ -883,12 +875,13 @@ with st.sidebar:
 if uploaded_file is None:
 
     st.subheader(
-        "Upload an image to begin"
+        "Upload a breast ultrasound image to begin"
     )
 
     st.write(
-        "DICOM CT, MRI and Ultrasound images can be viewed. "
-        "AI analysis is currently enabled only for Ultrasound."
+        "This application is designed specifically for breast ultrasound images. "
+        "Upload a PNG, JPG, JPEG, or ultrasound DICOM image to run lesion "
+        "segmentation, localization, and classification."
     )
 
 else:
@@ -918,8 +911,15 @@ else:
                 uploaded_file
             )
 
+            if modality != "US":
+                raise ValueError(
+                    "This application accepts ultrasound images only. "
+                    f"The uploaded DICOM reports modality '{modality}'. "
+                    "Please use the separate Medical Imaging Platform for CT or MRI."
+                )
+
             st.success(
-                f"Detected Modality: {modality}"
+                "Detected Modality: US"
             )
 
             metadata = (
@@ -968,7 +968,7 @@ else:
         # ====================================================
 
         st.subheader(
-            "Medical Image Viewer"
+            "Breast Ultrasound Viewer"
         )
 
         st.image(
@@ -977,7 +977,7 @@ else:
                 f"Original Image — "
                 f"Modality: {modality}"
             ),
-            use_container_width=True,
+            width="stretch",
             clamp=True
         )
 
@@ -1026,7 +1026,7 @@ else:
             )
 
             st.subheader(
-                "Ultrasound AI Analysis"
+                "Breast Ultrasound Analysis"
             )
 
             col1, col2, col3 = (
@@ -1040,7 +1040,7 @@ else:
                     caption=(
                         "Processed Ultrasound"
                     ),
-                    use_container_width=True,
+                    width="stretch",
                     clamp=True
                 )
 
@@ -1051,7 +1051,7 @@ else:
                     caption=(
                         "Predicted Lesion Mask"
                     ),
-                    use_container_width=True,
+                    width="stretch",
                     clamp=True
                 )
 
@@ -1065,7 +1065,7 @@ else:
                     caption=(
                         "Lesion Localization"
                     ),
-                    use_container_width=True
+                    width="stretch"
                 )
 
 
@@ -1074,7 +1074,7 @@ else:
             # =================================================
 
             st.subheader(
-                "AI Classification Result"
+                "Classification Result"
             )
 
             result1, result2, result3 = (
@@ -1136,15 +1136,9 @@ else:
                 )
 
 
-        # ====================================================
-        # CT / MRI / OTHER MODALITIES
-        # ====================================================
-
         else:
-
-            st.info(
-                "Viewer Mode — AI analysis is currently "
-                "available only for Ultrasound images."
+            st.error(
+                "This Breast Ultrasound application supports ultrasound images only."
             )
 
 
