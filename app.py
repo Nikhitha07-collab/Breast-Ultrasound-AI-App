@@ -977,7 +977,7 @@ else:
                 f"Original Image — "
                 f"Modality: {modality}"
             ),
-            width="stretch",
+            use_container_width=True,
             clamp=True
         )
 
@@ -1040,7 +1040,7 @@ else:
                     caption=(
                         "Processed Ultrasound"
                     ),
-                    width="stretch",
+                    use_container_width=True,
                     clamp=True
                 )
 
@@ -1051,7 +1051,7 @@ else:
                     caption=(
                         "Predicted Lesion Mask"
                     ),
-                    width="stretch",
+                    use_container_width=True,
                     clamp=True
                 )
 
@@ -1065,7 +1065,7 @@ else:
                     caption=(
                         "Lesion Localization"
                     ),
-                    width="stretch"
+                    use_container_width=True
                 )
 
 
